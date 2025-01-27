@@ -63,8 +63,8 @@ try {
                 $ticketId = isset($data['ticketId']) ? $data['ticketId'] : null;
                 $adults = isset($data['adults']) ? $data['adults'] : null;
                 $children = isset($data['children']) ? $data['children'] : null;
-                $ticketNr = "123";
-                $bookingNr = "123";
+                $ticketNr = "K1DB004O4M00007YK2RYD";
+                $bookingNr = "J1DE004O4M0007RU3BRP";
 
                 $result = $repository->insertBuyedTickets($bookedFrom, $bookedTo, $buyDate, $userId, $ticketId, $bookingNr, $ticketNr, $adults, $children);
                 $response = ["success" => $result, "message" => $result ? "Ticket erfolgreich eingefügt" : "Fehler beim Einfügen"];
