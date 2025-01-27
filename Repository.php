@@ -88,6 +88,21 @@ class Repository
         $stmt->close();
         return $data[0]['ID'];
     }
+
+    public function insertBuyedTickets($bookedFrom, $bookedTo, $buyDate, $userId, $ticketId, $bookingNr, $ticketNr, $adults, $children)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO buyedticket (bookedFrom, bookedTo, buyDate, user_ID, ticket_ID, bookingNr, ticketNr, adults, children) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssiissii", $bookedFrom, $bookedTo, $buyDate, $userId, $ticketId, $bookingNr, $ticketNr, $adults, $children);
+
+        $success = $stmt->execute();
+        if (!$success) {
+            return ["success" => false, "message" => "SQL-Fehler: " . $stmt->error];
+        }
+
+        $stmt->close();
+
+        return ["success" => $success, "message" => "Ticket erfolgreich eingefügt"];
+    }
 }
 
 ?>

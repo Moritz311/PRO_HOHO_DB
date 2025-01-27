@@ -11,10 +11,15 @@ $dbname = "hoho";
 $repository = new Repository($servername, $username, $password, $dbname);
 
 // params
-$action = isset($_GET['action']) ? $_GET['action'] : '';
 $response = [];
 
 try {
+    // JSON-Daten vor der Action-Initialisierung einlesen
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    // Action aus GET oder POST-Body bestimmen
+    $action = isset($_GET['action']) ? $_GET['action'] : (isset($data['action']) ? $data['action'] : '');
+
     if ($action) { //?action=...
         switch ($action) {
             case 'getTicketById':
@@ -23,7 +28,6 @@ try {
                     throw new Exception("ID ist erforderlich");
                 $response = $repository->getTicketById($id);
                 break;
-
             case 'getAllTicketsSbg':
                 $response = $repository->getAllTicketsSBG();
                 break;
@@ -46,10 +50,24 @@ try {
                 $response = $repository->getImageForLocAndDest($loc, $dest);
                 break;
             case 'getUserForToken':
-                $token = isset($_GET['token'])?$_GET['token']:null;
-                if(!$token)
+                $token = isset($_GET['token']) ? $_GET['token'] : null;
+                if (!$token)
                     throw new Exception("token ist erforderlich");
                 $response = $repository->getUserForToken($token);
+                break;
+            case 'insertBuyTicket':
+                $bookedFrom = isset($data['bookedFrom']) ? $data['bookedFrom'] : null;
+                $bookedTo = isset($data['bookedTo']) ? $data['bookedTo'] : null;
+                $buyDate = isset($data['buyDate']) ? $data['buyDate'] : null;
+                $userId = isset($data['userId']) ? $data['userId'] : null;
+                $ticketId = isset($data['ticketId']) ? $data['ticketId'] : null;
+                $adults = isset($data['adults']) ? $data['adults'] : null;
+                $children = isset($data['children']) ? $data['children'] : null;
+                $ticketNr = "123";
+                $bookingNr = "123";
+
+                $result = $repository->insertBuyedTickets($bookedFrom, $bookedTo, $buyDate, $userId, $ticketId, $bookingNr, $ticketNr, $adults, $children);
+                $response = ["success" => $result, "message" => $result ? "Ticket erfolgreich eingefügt" : "Fehler beim Einfügen"];
                 break;
             default:
                 throw new Exception("Ungültige Aktion");
@@ -63,4 +81,5 @@ try {
 }
 
 echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
 ?>
