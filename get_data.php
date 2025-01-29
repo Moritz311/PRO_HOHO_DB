@@ -80,6 +80,9 @@ try {
     $response = ["error" => $e->getMessage()];
 }
 
-echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
+$json = json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+if ($json === false) {
+    die("JSON-Fehler: " . json_last_error_msg());
+}
+echo $json;
 ?>

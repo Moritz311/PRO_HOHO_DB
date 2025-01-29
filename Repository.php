@@ -10,6 +10,7 @@ class Repository
         if ($this->conn->connect_error) {
             die("Datenbank-Verbindung fehlgeschlagen: " . $this->conn->connect_error);
         }
+        $this->conn->set_charset("utf8mb4");
     }
 
     public function __destruct()
